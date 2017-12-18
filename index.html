@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="keywords" content="resume">
+  <meta name="author" content="kelly">
+  <meta name="description" content="kelly's markup, css, javascript resume">
+  <meta name="format-detection" content="telephone=no,address=no,email=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=2.0">
+  <meta property="og:title" content="Kelly's Resume">
+  <meta property="og:description" content="kelly's markup, css, javascript blog">
+  <title>Kelly's Resume</title>
+  <style>
+
+    html {
+      line-height: 1.4;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      padding: 0;
+      margin: 0;
+      color: #333;
+      min-width: 800px;
+    }
+
+    span, object, div, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, button, abbr, address, big, cite, code, del, dfn, em, font, img, ins, q,
+    s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, textarea, input, figure, figcaption, video, mark {
+      margin: 0px;
+      padding: 0px;
+      vertical-align: baseline;
+    }
+
+    h1, h2, h3, h4, h5, h6, input, select, button {
+      font-family: inherit;
+      font-weight: normal;
+      color: inherit;
+    }
+
+    address, caption, cite, code, dfn, em, th, var {
+      font-style: inherit;
+      font-weight: inherit;
+      margin: 0px;
+      padding: 0px
+    }
+
+    ol, ul, li {
+      list-style: none;
+      text-decoration: none;
+    }
+
+    blockquote, q {
+      quotes: none;
+    }
+
+    main, nav, aside, article, header, section, footer, figure {
+      display: block;
+    }
+
+    a {
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-decoration: underline;
+    }
+
+    strong {
+      font-weight: 700;
+      margin: 0px;
+      padding: 0px
+    }
+
+    ::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 10px;
+      height: 10px;
+      background-color: transparent;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-corner {
+      background-color: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #d0cfd4;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background-clip: content-box;
+    }
+
+    #resume {
+      padding: 20px 16px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .global-lang {
+      margin-bottom: 20px;
+    }
+
+    .hi-title {
+      clear: both;
+      text-align: center;
+      font-size: 35px;
+      font-weight: 700;
+      padding: 40px 0 60px;
+    }
+
+    h2.title {
+      border-bottom: 2px solid #20d3bd;
+      font-size: 22px;
+      font-weight: 600;
+      color: #20d3bd;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    ul.list {
+      padding-left: 20px;
+      margin: 10px 0
+    }
+
+    ul.list > li {
+      margin: 10px 0 5px;
+    }
+
+    ul.list > li::before {
+      content: ' ';
+      display: inline-block;
+      border-radius: 100%;
+      width: 4px;
+      height: 4px;
+      border: 1px solid #333;
+      float: left;
+      margin-left: -1em;
+      margin-top: 8px;
+    }
+
+    ul.list2 {
+      margin: 10px 0
+    }
+
+    ul.list2 > li {
+      margin: 7px 0 3px;
+      line-height: 1.2
+    }
+
+    .fc-red {
+      color: #f00
+    }
+
+    .pad-box {
+      padding: 20px 0px;
+    }
+
+    .switch {
+      display: inline-block;
+      cursor: pointer;
+      white-space: nowrap;
+      line-height: 1.6em;
+      box-sizing: border-box
+    }
+
+    .switch-path {
+      height: 26px;
+      box-sizing: border-box;
+      border-radius: 13px;
+      width: 52px;
+      vertical-align: middle;
+      background-color: #d5ecf8;
+      display: inline-block;
+      position: relative;
+      box-shadow: inset 0 2px 3px -1px rgba(0, 0, 0, 0.4);
+      -webkit-box-shadow: inset 0 2px 3px -1px rgba(0, 0, 0, 0.4);
+    }
+
+    .switch-path::before {
+      display: block;
+      float: left;
+      height: 100%;
+    }
+
+    .switch-path::after {
+      display: block;
+      float: right;
+      height: 100%;
+    }
+
+    .switch-button {
+      font-size: inherit;
+      background-color: #2c9fdd;
+      display: block;
+      box-sizing: border-box;
+      border-radius: 100%;
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      padding: 1px;
+      top: -1px;
+      left: 0px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px rgba(0, 0, 0, 0.14), 0 1px 10px rgba(0, 0, 0, 0.12), inset -1px 2px 3px -1px rgba(255, 255, 255, 0.2), inset -1px -2px 3px -1px rgba(0, 0, 0, 0.3);
+      -webkit-box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px rgba(0, 0, 0, 0.14), 0 1px 10px rgba(0, 0, 0, 0.12), inset -1px 2px 3px -1px rgba(255, 255, 255, 0.2), inset -1px -2px 3px -1px rgba(0, 0, 0, 0.3);
+      transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      -webkit-transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      -o-transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .switch.is-right .switch-button {
+      left: 50%;
+    }
+
+    .switch-left-label {
+      padding-right: 10px;
+    }
+
+    .switch-right-label {
+      padding-left: 10px;
+    }
+
+    .switch label {
+      color: inherit;
+      cursor: pointer;
+      line-height: 26px;
+      position: relative;
+      display: inline-block;
+      box-sizing: border-box
+    }
+
+    .switch input {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .i18n {
+      visibility: hidden;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 0 10px 0 30px;
+      background-color: #00ace9;
+      color: #fff;
+      border: 1px solid #00ace9;
+      border-radius: 3px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button + button {
+      margin-left: 0px;
+    }
+  </style>
+  <script src="./index.js"></script>
+</head>
+<body id="resume">
+<script>
+  (function () {
+
+    var en = {
+      btn1: 'add New Element',
+      btn2: 'remove Element and re-append it',
+      portfolio: 'innerHTML works: <span class="fc-red">english0</span>',
+      pf1: 'english1',
+      pf2: 'english2',
+      pf3: 'english3',
+      pf4: 'english4',
+      pf5: 'english5',
+      experties: 'innerHTML works: <span class="fc-red">hello0</span>',
+      exp1: 'hello1',
+      exp2: 'hello2',
+      exp3: 'hello3'
+    }
+    var ko = {
+      btn1: '새 엘리먼트 추가',
+      btn2: '삭제 후 다시 붙이기',
+      portfolio: 'innerHTML works: <span class="fc-red">한국어0</span>',
+      pf1: "한국어1",
+      pf2: "한국어2",
+      pf3: "한국어3",
+      pf4: "한국어4",
+      pf5: "한국어5",
+      experties: 'innerHTML works: <span class="fc-red">헬로0</span>',
+      exp1: '헬로1',
+      exp2: '헬로2',
+      exp3: '헬로3'
+
+    }
+
+    function createElement (tag, attribute) {
+      var div = document.createElement(tag);
+      if ( attribute && typeof attribute === 'object' ) {
+        //faster than for in and doesn't care about prototype chain
+        var keys = Object.keys(attribute);
+        var key;
+        for ( var i = 0; i < keys.length; i++ ) {
+          key = keys[ i ];
+          div[ key ] = attribute[ key ];
+        }
+      }
+      return div;
+    }
+
+    function createText (paragraph) {
+      return document.createTextNode(paragraph);
+    }
+
+    function generateSwitch (option) {
+
+      function Switcher (el, name, leftText, leftValue, rightText, rightValue, init) {
+        var $this = this;
+        $this._left = leftValue;
+        $this._right = rightValue;
+        $this._eventHandler = [];
+        $this.isRight = false;
+        var ISRIGHT = 'is-right';
+        var switcher = el;
+        var box = document.createDocumentFragment();
+        var leftInput = createElement('input', { value: $this._left, type: 'radio', name: name });
+        var rightInput = createElement('input', { value: $this._right, type: 'radio', name: name });
+        var leftLabel = createElement('label', { className: 'switch-left-label' });
+        var rightLabel = createElement('label', { className: 'switch-right-label' });
+        var path = createElement('div', { className: 'switch-path' });
+        var btn = createElement('div', { className: 'switch-button' });
+        var _value;
+
+        Object.defineProperty($this, 'value', {
+          get: function () {
+            return _value;
+          },
+          set: function (value) {
+            if ( value === _value ) {
+              return
+            }
+            if ( value === rightValue ) {
+              $this.isRight = true;
+              _value = $this._right;
+              switcher.classList.add(ISRIGHT);
+              rightInput.checked = true;
+            } else {
+              $this.isRight = false;
+              _value = $this._left;
+              switcher.classList.remove(ISRIGHT);
+              leftInput.checked = true;
+            }
+            $this._eventHandler.forEach(function (fn) {
+              fn.call($this)
+            },)
+          }
+        });
+
+        // change event happens when it is checked;
+        leftInput.addEventListener('change', function () {
+          $this.value = $this._left;
+        }, false);
+        rightInput.addEventListener('change', function () {
+          $this.value = $this._right;
+        }, false);
+
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+        }, false)
+        path.addEventListener('click', function (e) {
+          $this.value = $this.isRight ? $this._left : $this._right;
+        }, false);
+        rightLabel.appendChild(rightInput)
+        rightLabel.appendChild(createText(rightText))
+        leftLabel.appendChild(leftInput)
+        leftLabel.appendChild(createText(leftText))
+        path.appendChild(btn);
+        box.appendChild(leftLabel);
+        box.appendChild(path);
+        box.appendChild(rightLabel);
+        //init value;
+        this.value = init;
+        switcher.append(box);
+      }
+
+      Switcher.prototype.change = function (fn) {
+        this._eventHandler.push(fn);
+      }
+      return new Switcher(option.el, option.name, option.leftLabel, option.leftValue, option.rightLabel, option.rightValue, option.init);
+    }
+
+    window.onload = function () {
+      var newContent = `
+        <h2 class="title"><div class="i18n" data-key="experties" data-html></div></h2>
+        <article class="content sec-expertise">
+          <ul class="list">
+            <li><span class="i18n" data-key="exp1"></span></li>
+            <li><span class="i18n" data-key="exp2"></span></li>
+            <li><span class="i18n" data-key="exp3"></span></li>
+          </ul>
+        </article>
+        `;
+      document.querySelector('.btn-toggle').addEventListener('click', function () {
+        document.querySelector('.appended').innerHTML = newContent;
+      })
+      var revived = document.querySelector('.revived')
+      var removed = false;
+      document.querySelector('.btn-toggle2').addEventListener('click', function () {
+        if ( !removed ) {
+          revived.parentNode.removeChild(revived)
+          removed = true
+        } else {
+          document.querySelector('.example').appendChild(revived)
+          removed = false
+        }
+      })
+      
+      // i18n initiation
+      var setLanguage = i18n({ en: en, ko: ko }, {
+        init: 'ko', // key name of language to initiate
+        applyHtmlLang: true, // applying language key name to HTML lang attribute
+        useCurly: true, // if use curly for expression or not;
+        useInnerHTML: 'data-html', // with attribute expression, it's the key to distinguish innerHTML and textContent
+        langKey: 'data-key', // with attribute expression it is used to show the key of language to use  
+        className: 'i18n' // flag class of target elements, searching for elements which contain this className to get change text
+      });
+
+      // with curly expession
+      // {{key}} for textContent {{{key}}} for innerHTML
+      
+      // when need to add dictionary later
+      setLanguage.addDictionary({ en: { title: 'vanillaI18n(Egnlish)' }, ko: { title: 'vanillaI18n(한국어)' } });
+      
+      var langSwitcher = generateSwitch({
+        el: document.querySelector('.global-lang'),
+        name: 'lang',
+        leftValue: 'en',
+        rightValue: 'ko',
+        init: 'ko',
+        leftLabel: 'English',
+        rightLabel: '한국어'
+      });
+      langSwitcher.change(function () {
+        setLanguage.lang = this.value;
+      })
+    };
+  })();
+</script>
+<div class="example">
+  <header>
+    <h1 class="hi-title i18n">{{title}}</h1>
+    <div class="switch global-lang"></div>
+    <button type="button" class="btn-toggle i18n">{{btn1}}</button>
+    <button type="button" class="btn-toggle2 i18n">{{btn2}}</button>
+  </header>
+  <section class="pad-box appended">
+
+  </section>
+  <section class="pad-box revived">
+    <h2 class="title">
+      <div class="i18n">{{{portfolio}}}</div>
+    </h2>
+    <article class="content sec-expertise">
+      <ul class="list">
+        <li><span class="i18n">{{pf1}}</span></li>
+        <li><span class="i18n">{{pf2}}</span></li>
+        <li><span class="i18n">{{pf3}}</span></li>
+        <li><span class="i18n">{{pf4}}</span></li>
+        <li><span class="i18n">{{pf5}}</span></li>
+        <li><span class="i18n">{{wrong_key_provided_with_curly_bracket}}</span></li>
+        <li><span class="i18n">{{wrong key consisted with several words with curly bracket}}</span></li>
+        <li><span class="i18n" data-key="wrong_key_provided_with_data_attribute"></span></li>
+        <li><span class="i18n" data-key="wrong key consisted with several words with data attribute"></span></li>
+      </ul>
+    </article>
+  </section>
+</div>
+</body>
+</html>
