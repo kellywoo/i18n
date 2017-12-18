@@ -1,5 +1,7 @@
 # i18n
 
+Demo: <https://kellywoo.github.io/i18n/>
+
 ## init
 
 ```
