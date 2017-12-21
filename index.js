@@ -135,6 +135,7 @@
 
         // once initiated like the case it is removed
         // from the document and inserted again
+        console.log(el);
         if ( key = el.__translate__ ) {
           updateDom([el],key);
           elements[ key ].push(el);
@@ -172,6 +173,7 @@
       }
 
       // when dictionary updated it should update elements as well
+
       var _keysToUpdate = [];
 
       function mergeDic (to, from) {
@@ -190,9 +192,10 @@
       function addDictionary (name, obj){
         _keysToUpdate = [];
         mergeDic(_dictionary[ name ], obj);
-        _keysToUpdate.forEach(function(key){
+        while (_keysToUpdate.length) {
+          var key = _keysToUpdate.pop();
           updateDom(elements[key], key)
-        })
+        }
       }
 
       $this.addDictionary = function (name, obj) {
@@ -208,6 +211,29 @@
         }
       }
 
+      const nextTick = (function () {
+        return window.requestAnimationFrame ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame ||
+          function (callback) {
+            window.setTimeout(callback, 1000 / 60)
+          }
+      })()
+      function sliceInterval (arr, limit, fn, callback) {
+        var len= Math.min(arr.length,limit);
+        console.log(len);
+        var runner = function(){
+          for(var i = 0; i < len; i++) {
+            fn(arr.shift())
+          }
+          if(arr.length > 0) {
+            nextTick(function(){ sliceInterval(arr,limit,fn, callback)});
+          } else {
+            typeof callback ==='function' && callback();
+          }
+        }
+        runner(arr,limit,fn, callback);
+      }
 
       function init () {
 
@@ -234,9 +260,9 @@
             }
           }
         });
-
-        [].forEach.call(document.querySelectorAll('.' + _className), initDom);
-        documentDetect();
+        sliceInterval([].slice.call(document.querySelectorAll('.' + _className)), 100, initDom, documentDetect)
+        //[].forEach.call(document.querySelectorAll('.' + _className), initDom);
+        //documentDetect();
       }
 
       init();
