@@ -444,6 +444,19 @@
       langSwitcher.change(function () {
         setLanguage.lang = this.value;
       })
+
+      function createTest(){
+        var div= document.createElement('div');
+        div.classList.add('i18n');
+        div.textContent = '{{btn1}}'
+        return div;
+      }
+      function testRun(){
+        var test = document.querySelector('.test');
+        for(var i=0;i<1000;i++){
+          test.appendChild(createTest());
+        }
+      }
     };
   })();
 </script>
@@ -475,6 +488,9 @@
       </ul>
     </article>
   </section>
+  <div class="test">
+
+  </div>
 </div>
 </body>
 </html>

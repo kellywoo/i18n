@@ -14,6 +14,7 @@
       var _className = option.className || 'i18n';
       var _applyToHtml = option.applyHtmlLang || false;
       var _useCurly = option.useCurly || true;
+      var _i18n = '__i18n__'
       var _dictionary = dictionary;
       var useInnerHtml = {};
       var elements;
@@ -29,37 +30,61 @@
         return tempObj;
       }
 
-      /*
-       * detects when dom elements is removed or inserted to the document
-       * */
-      function documentDetect () {
-        document.addEventListener('DOMNodeRemoved', function (e) {
-          var target = e.target;
-          if ( target.tagName ) {
-            var i, j,
-              list = target.classList.contains(_className) ? [ target ]
-                : [].slice.call(target.querySelectorAll('.' + _className));
-            for ( j = 0; j < list.length; j++ ) {
-              var key = list[ j ].__translate__
+      function removeNodes (target) {
+        if ( target.tagName ) {
+          var i, j,
+            list = target.classList.contains(_className) ? [ target ]
+              : [].slice.call(target.querySelectorAll('.' + _className));
+          for ( j = 0; j < list.length; j++ ) {
+            var key = list[ j ][ _i18n ];
+
+            // key might not be the right format and in that case element array doesn't exist;
+            if ( elements[ key ] ) {
               for ( i = 0; i < elements[ key ].length; i++ ) {
-                if ( elements[ key ][ i ] === target ) {
+                if ( elements[ key ][ i ] === list[ j ] ) {
                   elements[ key ].splice(i, 1);
                 }
               }
             }
           }
-        })
-        document.addEventListener('DOMNodeInserted', function (e) {
-          var target = e.target;
-          if ( target.tagName ) {
-            var i,
-              list = target.classList.contains(_className) ? [ target ]
-                : [].slice.call(target.querySelectorAll('.' + _className));
-            for ( i = 0; i < list.length; i++ ) {
-              initDom(list[ i ]);
-            }
+        }
+      }
+
+      function addNodes (target) {
+        if ( target.tagName ) {
+          var i,
+            list = target.classList.contains(_className) ? [ target ]
+              : [].slice.call(target.querySelectorAll('.' + _className));
+          for ( i = 0; i < list.length; i++ ) {
+            initDom(list[ i ]);
           }
-        })
+        }
+      }
+
+      /*
+       * detects when dom elements is removed or inserted to the document
+       * */
+      function documentDetect () {
+        if ( window.MutationObserver ) {
+          var observer = new MutationObserver(function (e) {
+            for ( var i = 0; i < e.length; i++ ) {
+              var record = e[ i ]
+              if ( record.type === 'childList' ) {
+                record.removedNodes.length && [].forEach.call(record.removedNodes, removeNodes);
+                record.addedNodes.length && [].forEach.call(record.addedNodes, addNodes);
+              }
+            }
+          })
+          observer.observe(document.body, { childList: true, subtree: true });
+        } else {
+
+          document.addEventListener('DOMNodeRemoved', function (e) {
+            removeNodes(e.target);
+          })
+          document.addEventListener('DOMNodeInserted', function (e) {
+            addNodes(e.target);
+          })
+        }
       }
 
       /*
@@ -69,15 +94,7 @@
       function changeLang (lang) {
         Object.keys(elements).forEach(function (key) {
           if ( (elements[ key ] && elements[ key ].length) ) {
-            if ( useInnerHtml[ key ] ) {
-              elements[ key ].forEach(function (el) {
-                el.innerHTML = _dictionary[ lang ][ key ] || key
-              })
-            } else {
-              elements[ key ].forEach(function (el) {
-                el.textContent = _dictionary[ lang ][ key ] || key
-              })
-            }
+            updateDom(elements[ key ], key, lang)
           }
         })
       }
@@ -126,49 +143,59 @@
         }
       }
 
-
-      /*
-       * register dom to elements for translatiion by it's key
-       * */
-      function initDom (el) {
+       function initDom (el) {
         var key;
 
         // once initiated like the case it is removed
         // from the document and inserted again
-        if ( key = el.__translate__ ) {
-          updateDom([el],key);
-          elements[ key ].push(el);
+        if ( key = el[ _i18n ] ) {
+          updateDom([ el ], key, $this.lang);
+          addElement(elements[ key ], el);
           // if it's the first time dom init
         } else {
-          key = getKeyWhenInitDom(el, _useCurly)
-          el.classList.remove(_className);
+          key = getKeyWhenInitDom(el, _useCurly);
 
           if ( key ) {
             // elements can have duplicated wording, so keep in in array
             elements[ key ] = elements[ key ] || [];
-            elements[ key ].push(el);
-            el.__translate__ = key;
+            addElement(elements[ key ], el);
+            el[ _i18n ] = key;
 
             if ( el.getAttribute(INNERHTML) ) {
               // innerHTML and textContent differed by words not elements
               // so it doesn't have to be recorded separately
               useInnerHtml[ key ] = true;
             }
-            updateDom([el],key);
+            updateDom([ el ], key, $this.lang);
           }
         }
       }
 
-      function updateDom (elArr, key) {
-        elArr.forEach(
-          function (el) {
-            if ( useInnerHtml[ key ] ) {
-              el.innerHTML = _dictionary[ $this.lang ][ key ] || key
-            } else {
-              el.textContent = _dictionary[ $this.lang ][ key ] || key
-            }
+      function addElement (arr, el) {
+        if ( !noMultiple(arr, el) ) {
+          arr.push(el)
+        }
+      }
+
+      function noMultiple (arr, el) {
+        var flag = false;
+        for ( var i = 0; i < arr.length; i++ ) {
+          if ( arr[ i ] === el ) {
+            flag = true;
+            break;
           }
-        )
+        }
+        return flag;
+      }
+
+      function updateDom (elArr, key, lang) {
+        var fn = useInnerHtml[ key ] ? function (el) {
+          el.innerHTML = _dictionary[ lang ][ key ] || key
+        } : function (el) {
+          el.textContent = _dictionary[ lang ][ key ] || key
+        }
+
+        elArr.forEach(fn);
       }
 
       // when dictionary updated it should update elements as well
@@ -188,12 +215,12 @@
         return to;
       }
 
-      function addDictionary (name, obj){
+      function addDictionary (name, obj) {
         _keysToUpdate = [];
         mergeDic(_dictionary[ name ], obj);
-        while (_keysToUpdate.length) {
+        while ( _keysToUpdate.length ) {
           var key = _keysToUpdate.pop();
-          updateDom(elements[key], key)
+          updateDom(elements[ key ], key, $this.lang)
         }
       }
 
@@ -201,10 +228,10 @@
         if ( typeof name === 'object' ) {
           var lang = Object.keys(name);
           for ( var i = 0; i < lang.length; i++ ) {
-            addDictionary( lang[i], name[ lang[i]])
+            addDictionary(lang[ i ], name[ lang[ i ] ])
           }
         } else if ( typeof name === 'string' && _dictionary[ name ] && typeof obj === 'object' ) {
-          addDictionary( name, obj)
+          addDictionary(name, obj)
         } else {
           console.warn('parameters put in are not right format.')
         }
@@ -218,21 +245,35 @@
             window.setTimeout(callback, 1000 / 60)
           }
       })()
+
       function sliceInterval (arr, limit, fn, callback) {
-        var len= Math.min(arr.length,limit);
-        var runner = function(){
-          for(var i = 0; i < len; i++) {
+        var len = Math.min(arr.length, limit);
+        var runner = function () {
+          for ( var i = 0; i < len; i++ ) {
             fn(arr.shift())
           }
-          if(arr.length > 0) {
-            nextTick(function(){ sliceInterval(arr,limit,fn, callback)});
+          if ( arr.length > 0 ) {
+            nextTick(function () {
+              sliceInterval(arr, limit, fn, callback)
+            });
           } else {
-            typeof callback ==='function' && callback();
+            typeof callback === 'function' && callback();
           }
         }
-        runner(arr,limit,fn, callback);
+        runner(arr, limit, fn, callback);
       }
 
+
+      function addStyleSheet(css){
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        if ( style.styleSheet ) {
+          style.styleSheet.cssText = css;
+        } else {
+          style.appendChild(document.createTextNode(css));
+        }
+        document.head.appendChild(style);
+      }
       function init () {
 
         // there would be some elements which will draw later, so check dictionary not displayed element
@@ -259,8 +300,7 @@
           }
         });
         sliceInterval([].slice.call(document.querySelectorAll('.' + _className)), 100, initDom, documentDetect)
-        //[].forEach.call(document.querySelectorAll('.' + _className), initDom);
-        //documentDetect();
+        addStyleSheet('.' + _className + '{visibility: visible}')
       }
 
       init();
