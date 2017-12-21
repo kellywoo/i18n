@@ -135,7 +135,6 @@
 
         // once initiated like the case it is removed
         // from the document and inserted again
-        console.log(el);
         if ( key = el.__translate__ ) {
           updateDom([el],key);
           elements[ key ].push(el);
@@ -221,7 +220,6 @@
       })()
       function sliceInterval (arr, limit, fn, callback) {
         var len= Math.min(arr.length,limit);
-        console.log(len);
         var runner = function(){
           for(var i = 0; i < len; i++) {
             fn(arr.shift())
