@@ -202,12 +202,12 @@
       padding: 1px;
       top: -1px;
       left: 0px;
-      cursor: pointer;
       box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px rgba(0, 0, 0, 0.14), 0 1px 10px rgba(0, 0, 0, 0.12), inset -1px 2px 3px -1px rgba(255, 255, 255, 0.2), inset -1px -2px 3px -1px rgba(0, 0, 0, 0.3);
       -webkit-box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px rgba(0, 0, 0, 0.14), 0 1px 10px rgba(0, 0, 0, 0.12), inset -1px 2px 3px -1px rgba(255, 255, 255, 0.2), inset -1px -2px 3px -1px rgba(0, 0, 0, 0.3);
       transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       -webkit-transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       -o-transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: default;
     }
 
     .switch.is-right .switch-button {
@@ -268,6 +268,7 @@
     var en = {
       btn1: 'add New Element(innerHTML)',
       btn2: 'toggle to remove and re-append',
+      btn3: 'appendChildren',
       portfolio: 'innerHTML works: <span class="fc-red">english0</span>',
       pf1: 'english1',
       pf2: 'english2',
@@ -282,6 +283,7 @@
     var ko = {
       btn1: '새 엘리먼트 추가(innerHTML)',
       btn2: '삭제 후 다시 붙이기(toggle)',
+      btn3: '새 엘리먼트 추가(appendChild)',
       portfolio: 'innerHTML works: <span class="fc-red">한국어0</span>',
       pf1: "한국어1",
       pf2: "한국어2",
@@ -415,7 +417,14 @@
           removed = false
         }
       })
-      
+
+      document.querySelector('.btn-toggle3').addEventListener('click', function () {
+        var div = document.createElement('div');
+        div.innerHTML = newContent;
+        document.querySelector('.appended').appendChild(div.firstElementChild);
+        document.querySelector('.appended').appendChild(div.firstElementChild);
+      })
+
       // i18n initiation
       var setLanguage = i18n({ en: en, ko: ko }, {
         init: 'ko', // key name of language to initiate
@@ -457,15 +466,19 @@
           test.appendChild(createTest());
         }
       }
+
     };
   })();
 </script>
 <div class="example">
   <header>
     <h1 class="hi-title i18n">{{title}}</h1>
-    <div class="switch global-lang"></div>
+    <div style="text-align: center;">
+      <div class="switch global-lang" style="margin-left: 20px"></div>
+    </div>
     <button type="button" class="btn-toggle i18n">{{btn1}}</button>
     <button type="button" class="btn-toggle2 i18n">{{btn2}}</button>
+    <button type="button" class="btn-toggle3 i18n">{{btn3}}</button>
   </header>
   <section class="pad-box appended">
 

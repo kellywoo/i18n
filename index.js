@@ -51,17 +51,12 @@
       function documentDetect () {
         if ( window.MutationObserver ) {
           var observer = new MutationObserver(function (e) {
-            var a,b;
-            a=performance.now()
             for ( var i = 0; i < e.length; i++ ) {
               var record = e[ i ]
               if ( record.type === 'childList' ) {
                 record.addedNodes.length && [].forEach.call(record.addedNodes, addNodes);
               }
             }
-
-            b=performance.now()
-            console.log('detect add',b-a)
           })
           observer.observe(document.body, { childList: true, subtree: true });
         } else {
@@ -226,7 +221,7 @@
         }
         document.head.appendChild(style);
       }
-      var a,b;
+
       function init () {
 
         /*
@@ -238,7 +233,6 @@
             return _currentLang;
           },
           set: function (val) {
-            a = performance.now()
             if ( _dictionary[ val ] ) {
               _currentLang = val;
               sliceInterval(getTargetElements(), 100, initDom)
@@ -248,8 +242,6 @@
             } else {
               console.warn('You are trying to set the language dictionary doesn\'t support\n please add language pack for ' + val + ' to dictionary')
             }
-            b = performance.now()
-            console.log('changelang',b-a);
           }
         });
         $this.lang = _currentLang;
