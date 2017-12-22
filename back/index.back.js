@@ -7,7 +7,6 @@
   function translate (dictionary, option) {
 
     function i18n (dictionary, option) {
-      var slice = [].slice;
       var $this = this;
       var INNERHTML = option.useInnerHTML || 'data-html';
       var LANGKEY = option.langKey || 'data-key';
@@ -19,10 +18,7 @@
       var _dictionary = dictionary;
       var useInnerHtml = {};
       var elements;
-      var getTargetElements = function(parent){
-         parent = parent || document;
-        return slice.call(parent.getElementsByClassName(_className));
-      }
+
       function assign (obj) {
         if ( typeof obj !== 'object' ) {
           return false;
@@ -34,11 +30,31 @@
         return tempObj;
       }
 
-       function addNodes (target) {
+      function removeNodes (target) {
+        if ( target.tagName ) {
+          var i, j,
+            list = target.classList.contains(_className) ? [ target ]
+              : [].slice.call(target.getElementsByClassName(_className));
+          for ( j = 0; j < list.length; j++ ) {
+            var key = list[ j ][ _i18n ];
+
+            // key might not be the right format and in that case element array doesn't exist;
+            if ( elements[ key ] ) {
+              for ( i = 0; i < elements[ key ].length; i++ ) {
+                if ( elements[ key ][ i ] === list[ j ] ) {
+                  elements[ key ].splice(i, 1);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      function addNodes (target) {
         if ( target.tagName ) {
           var i,
             list = target.classList.contains(_className) ? [ target ]
-              : getTargetElements(target);
+              : [].slice.call(target.getElementsByClassName(_className));
           for ( i = 0; i < list.length; i++ ) {
             initDom(list[ i ]);
           }
@@ -56,6 +72,7 @@
             for ( var i = 0; i < e.length; i++ ) {
               var record = e[ i ]
               if ( record.type === 'childList' ) {
+                record.removedNodes.length && [].forEach.call(record.removedNodes, removeNodes);
                 record.addedNodes.length && [].forEach.call(record.addedNodes, addNodes);
               }
             }
@@ -65,12 +82,27 @@
           })
           observer.observe(document.body, { childList: true, subtree: true });
         } else {
+
+          document.addEventListener('DOMNodeRemoved', function (e) {
+            removeNodes(e.target);
+          })
           document.addEventListener('DOMNodeInserted', function (e) {
             addNodes(e.target);
           })
         }
       }
 
+      /*
+       * execute changing language
+       * it is provoked by $this.lang's setter
+       * */
+      function changeLang (lang) {
+        Object.keys(elements).forEach(function (key) {
+          if ( (elements[ key ] && elements[ key ].length) ) {
+            updateDom(elements[ key ], key, lang)
+          }
+        })
+      }
 
       /*
        * get value of attributes from the element
@@ -123,11 +155,15 @@
         // from the document and inserted again
         if ( key = el[ _i18n ] ) {
           updateDom([ el ], key, $this.lang);
+          addElement(elements[ key ], el);
           // if it's the first time dom init
         } else {
           key = getKeyWhenInitDom(el, _useCurly);
 
           if ( key ) {
+            // elements can have duplicated wording, so keep in in array
+            elements[ key ] = elements[ key ] || [];
+            addElement(elements[ key ], el);
             el[ _i18n ] = key;
 
             if ( el.getAttribute(INNERHTML) ) {
@@ -140,6 +176,22 @@
         }
       }
 
+      function addElement (arr, el) {
+        if ( !noMultiple(arr, el) ) {
+          arr.push(el)
+        }
+      }
+
+      function noMultiple (arr, el) {
+        var flag = false;
+        for ( var i = 0; i < arr.length; i++ ) {
+          if ( arr[ i ] === el ) {
+            flag = true;
+            break;
+          }
+        }
+        return flag;
+      }
 
       function updateDom (elArr, key, lang) {
         var fn = useInnerHtml[ key ] ? function (el) {
@@ -147,6 +199,7 @@
         } : function (el) {
           el.textContent = _dictionary[ lang ][ key ] || key
         }
+
         elArr.forEach(fn);
       }
 
@@ -172,7 +225,7 @@
         mergeDic(_dictionary[ name ], obj);
         while ( _keysToUpdate.length ) {
           var key = _keysToUpdate.pop();
-          updateDom(getTargetElements().filter(function(el){return el[_i18n]===key}), key, $this.lang)
+          updateDom(elements[ key ], key, $this.lang)
         }
       }
 
@@ -229,8 +282,11 @@
       var a,b;
       function init () {
 
+        // there would be some elements which will draw later, so check dictionary not displayed element
+        elements = assign(dictionary[ Object.keys(dictionary)[ 0 ] ]);
+
         /*
-         * only lang property and addDictionary methods exposed
+         * only lang property exposed out side
          * */
 
         Object.defineProperty($this, 'lang', {
@@ -241,22 +297,20 @@
             a = performance.now()
             if ( _dictionary[ val ] ) {
               _currentLang = val;
-              sliceInterval(getTargetElements(), 100, initDom)
+              changeLang(val);
               if ( _applyToHtml ) {
                 document.documentElement.lang = val
               }
+              b = performance.now()
+              console.log('changelang',b-a);
             } else {
               console.warn('You are trying to set the language dictionary doesn\'t support\n please add language pack for ' + val + ' to dictionary')
             }
-            b = performance.now()
-            console.log('changelang',b-a);
           }
         });
-        $this.lang = _currentLang;
-        documentDetect();
+        sliceInterval([].slice.call(document.getElementsByClassName(_className)), 100, initDom, documentDetect)
         addStyleSheet('.' + _className + '{visibility: visible}')
       }
-
 
       init();
       return $this;

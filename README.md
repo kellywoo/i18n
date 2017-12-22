@@ -4,7 +4,7 @@ Demo: <https://kellywoo.github.io/i18n/>
 
 ## init
 
-```
+``` javascript
 var setLanguage = i18n({ en: {...}, ko: {...} }, {
         init: 'ko', // key name of language to initiate
         applyHtmlLang: true, // applying language key name to HTML lang attribute
@@ -17,9 +17,9 @@ var setLanguage = i18n({ en: {...}, ko: {...} }, {
       setLangage.lang = 'en'
 ```
 
-### how to use
+## how to use
 
-```
+``` javascript
 <!--textContent-->
 <li><span class="i18n">{{pf1}}</span></li>
 <!--innerHTML-->
@@ -33,9 +33,13 @@ or
 <!-- data attribute can be set when initiating -->
 ```
 
-### how to add dictionary
+## how to add dictionary
 ```
 setLanguage.addDictionary({ en: { title: 'vanillaI18n(Egnlish)' }, ko: { title: 'vanillaI18n(한국어)' } });
 
 ```
 
+
+## License
+
+MIT © [kelly.kh.woo@gmail.com]()
